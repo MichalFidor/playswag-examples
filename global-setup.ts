@@ -7,10 +7,11 @@ import { execSync } from 'node:child_process';
  * test run deleted or mutated pre-seeded pets, the state carries over and causes
  * failures on the second run. Recreating the container guarantees a clean slate.
  *
- * Playwright runs this file once before any test worker starts.
- * The actual "wait for server ready" is handled by the `webServer` block in
- * playwright.config.ts with `reuseExistingServer: true` — which watches the
- * spec endpoint that globalSetup just brought up.
+ * This file is the sole owner of container lifecycle. There is no webServer
+ * block in playwright.config.ts because `docker compose up -d` exits
+ * immediately (detached), which Playwright misreads as a crashed server.
+ * global-setup runs before any test worker starts and blocks until the
+ * endpoint is actually reachable.
  */
 export default async function globalSetup(): Promise<void> {
   execSync('docker compose stop petstore 2>/dev/null || true', { stdio: 'pipe' });
@@ -18,7 +19,7 @@ export default async function globalSetup(): Promise<void> {
 
   const endpoint = 'http://localhost:8080/api/v3/openapi.json';
   const start = Date.now();
-  const timeoutMs = 60_000;
+  const timeoutMs = 120_000;
 
   while (Date.now() - start < timeoutMs) {
     try {

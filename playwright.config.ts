@@ -110,18 +110,4 @@ export default defineConfig({
     },
   },
 
-  webServer: {
-    /**
-     * global-setup.ts already started the container. This block simply polls
-     * the spec endpoint until the server is ready to accept requests, giving
-     * Playwright a clean integration point with Docker's startup time.
-     *
-     * On first run (no container yet) Docker pulls the image and starts it;
-     * on subsequent runs global-setup stops and recreates it for a clean state.
-     */
-    command: 'docker compose up -d',
-    url: 'http://localhost:8080/api/v3/openapi.json',
-    reuseExistingServer: true,
-    timeout: 60_000,
-  },
 });
