@@ -8,6 +8,6 @@
     "skipLibCheck": true,
     "outDir": "dist"
   },
-  "include": ["tests/**/*.ts", "playwright.config.ts", "global-setup.ts"],
+  "include": ["tests/**/*.ts", "configs/**/*.ts", "playwright.config.ts", "global-setup.ts"],
   "exclude": ["node_modules"]
 }

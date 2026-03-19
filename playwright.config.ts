@@ -23,18 +23,39 @@ export default defineConfig({
   workers: 1,
 
   /**
-   * Two Playwright projects show different fixture-option configurations.
+   * Four Playwright projects, each demonstrating a different aspect of
+   * playswag fixture configuration.
    *
-   * core            — main API tests, full tracking (captureResponseBody: true).
+   * core            — full tracking of the three primary spec files.
    *
-   * fixture-options — shows how test.use({ playswagEnabled: false }) and
-   *                   test.use({ captureResponseBody: false }) change what
-   *                   playswag records, without changing what Playwright does.
+   * error-paths     — a dedicated suite of tests that deliberately trigger
+   *                   4xx responses to fill in status code coverage gaps.
+   *                   Keeping these separate makes the intent explicit and
+   *                   keeps the happy-path specs clean.
+   *
+   * lean            — captureResponseBody: false at the project level.
+   *                   Endpoints, status codes, params, and request body
+   *                   fields are still recorded; response bodies are
+   *                   discarded. Useful for polling tests or large payloads.
+   *
+   * fixture-options — test.use() per-describe overrides: playswagEnabled: false
+   *                   (calls not recorded at all) and captureResponseBody: false
+   *                   (calls recorded without response body) — see also the
+   *                   same options applied at project level in `lean` above.
    */
   projects: [
     {
       name: 'core',
       testMatch: ['**/pets.spec.ts', '**/store.spec.ts', '**/user.spec.ts'],
+    },
+    {
+      name: 'error-paths',
+      testMatch: ['**/error-paths.spec.ts'],
+    },
+    {
+      name: 'lean',
+      testMatch: ['**/lean.spec.ts'],
+      use: { captureResponseBody: false },
     },
     {
       name: 'fixture-options',
