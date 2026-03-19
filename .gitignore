@@ -1,0 +1,7 @@
+node_modules/
+test-results/
+
+# playswag reports — keep HTML + MD + badge committed so they're browsable on GitHub
+playswag-report/playswag-coverage.json
+playswag-report/playswag-history.json
+playswag-report/playswag-junit.xml

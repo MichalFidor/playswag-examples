@@ -1,0 +1,17 @@
+{
+  "name": "playswag-examples",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real-world Playwright API coverage examples using @michalfidor/playswag against the Swagger Petstore v3.",
+  "engines": { "node": ">=18.0.0" },
+  "type": "module",
+  "scripts": {
+    "test":         "playwright test",
+    "test:ci":      "playwright test --reporter=list",
+    "refresh-spec": "node scripts/refresh-spec.mjs"
+  },
+  "devDependencies": {
+    "@michalfidor/playswag": "^1.8.0",
+    "@playwright/test": "^1.50.0"
+  }
+}
