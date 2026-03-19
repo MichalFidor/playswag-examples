@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from '@michalfidor/playswag';
 
 /**
  * playswag-examples — Swagger Petstore v3 coverage demo.
@@ -22,7 +22,26 @@ export default defineConfig({
    */
   workers: 1,
 
-  // ── playswag reporter ──────────────────────────────────────────────────────
+  /**
+   * Two Playwright projects show different fixture-option configurations.
+   *
+   * core            — main API tests, full tracking (captureResponseBody: true).
+   *
+   * fixture-options — shows how test.use({ playswagEnabled: false }) and
+   *                   test.use({ captureResponseBody: false }) change what
+   *                   playswag records, without changing what Playwright does.
+   */
+  projects: [
+    {
+      name: 'core',
+      testMatch: ['**/pets.spec.ts', '**/store.spec.ts', '**/user.spec.ts'],
+    },
+    {
+      name: 'fixture-options',
+      testMatch: ['**/fixture-options.spec.ts'],
+    },
+  ],
+
   reporter: [
     [
       '@michalfidor/playswag/reporter',
@@ -59,30 +78,25 @@ export default defineConfig({
         },
         failOnThreshold: true,
 
-        // Console extras
         consoleOutput: {
-          showTags:               true,  // per-tag summary table
-          showStatusCodeBreakdown: true, // breakdown by HTTP status code
-          showOperationId:        true,  // show operationId next to path
+          showTags:                true,
+          showStatusCodeBreakdown: true,
+          showOperationId:         true,
         },
 
-        // HTML
         htmlOutput: { title: 'Petstore API Coverage' },
 
-        // Markdown — uncovered ops listed at the bottom
         markdownOutput: { showUncoveredOperations: true },
 
-        // GitHub Actions step summary
         githubActionsOutput: { showUncoveredOperations: true },
       },
     ],
   ],
 
-  // ── Playwright use block ───────────────────────────────────────────────────
   use: {
     /**
      * The Petstore API sits under /api/v3 — set as base so tests can call
-     * request.get('/pet') instead of the full URL.
+     * request.get('pet') instead of the full URL.
      */
     baseURL: 'http://localhost:8080/api/v3/',
 
@@ -96,7 +110,6 @@ export default defineConfig({
     },
   },
 
-  // ── Automatic Petstore startup ─────────────────────────────────────────────
   webServer: {
     /**
      * global-setup.ts already started the container. This block simply polls
